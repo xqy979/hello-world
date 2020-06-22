@@ -17,7 +17,8 @@ class RegisterForm extends Component {
     onFinish = (values) => {
           console.log('Received values of form: ', values);
     }
-    toggeleFrom = ()=>{
+    toogleForm = () => {
+        // 调父级的方法
         this.props.switchFrom("login");
     }
 
@@ -26,7 +27,7 @@ class RegisterForm extends Component {
             <Fragment>
                 <div className='form-header'>
                     <h4>注册</h4>
-                    <span onClick={()=>this.toggeleFrom()}>登录</span>
+                    <span onClick={()=>this.toogleForm()}>登录</span>
                 </div>
                 <div className='form-content'>
                     <Form

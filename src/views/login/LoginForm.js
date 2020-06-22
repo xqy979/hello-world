@@ -1,47 +1,84 @@
 import React, { Component,Fragment } from 'react'
 // import { Button } from 'antd';
 import './index.scss';
-import { Form, Input, Button,Row, Col,  } from 'antd';
-import { UserOutlined,LockOutlined   } from '@ant-design/icons';
+import { Form, Input, Button,Row, Col, message } from 'antd'
+import { UserOutlined,LockOutlined   } from '@ant-design/icons'
 
 import {validate_password} from '../../until/validate'
+import {Login,GetCode} from '../../api/account'
 // const style = { background: '#0092ff', padding: '8px 0' };
 
 class LoginForm extends Component {
     constructor() {
         super()
-        this.state = {}
+        this.state = {
+            username:""
+        }
 
         this.onFinish = this.onFinish.bind(this)
     };
  
     onFinish = (values) => {
+        Login().then(res=>{
+            console.log(res)
+        })
           console.log('Received values of form: ', values);
     }
-    toggeleFrom = ()=>{
+    // register
+    toogleForm = () => {
+        // 调父级的方法
         this.props.switchFrom("register");
     }
+    getCode=()=>{
+        const username = this.state.username;
+        if(!username) {
+            message.warning('用户名不能为空！！', 1);
+            return false;
+        }
+        if(!validate_email(username)){
+            message.warning('邮箱格式不正确！！', 1);
+            return false;
+        }
+        const requestData = {
+            username:this.state.username,
+            module:'login'
+        }
+        console.log(this.state.username)
+        GetCode(requestData).then(res=>{
+            console.log(res)
+        })
+    }
+    //改变input的value
+    inputChange =(e)=>{
+        let value = e.target.value
+        this.setState({
+            username:value
+        })
+        console.log(value)
+    }
+
     render() {
+        const {username} = this.state
         return (
             <Fragment>
             <div className='form-wrap'>
                 <div className='form-header'>
                     <h4>登录</h4>
-                    <span onClick={this.toggeleFrom}>注册</span>
+                    <span onClick={this.toogleForm}>注册</span>
                 </div>
                 <div className='form-content'>
                     <Form
                         name="normal_login"
                         className="login-form"
                         initialValues={{ remember: true }}
-                        onFinish={()=>this.onFinish}
+                        onFinish={()=>this.onFinish()}
                     >
                         <Form.Item name="username" rules={
                             [
                                 { required: true, message: '邮箱不能为空!' },
                                 { type: "email", message: '邮箱格式不正确' }
                             ]} >
-                            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email"  />
+                            <Input value = { username } onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email"  />
                         </Form.Item>
                         
                         <Form.Item  name="password" rules={
@@ -76,7 +113,7 @@ class LoginForm extends Component {
 
                                 </Col>
                                 <Col className="gutter-row" span={9}>
-                                    <Button type="primary" htmlType="submit" danger className="login-form-button">
+                                    <Button type="primary" onClick={this.getCode} danger className="login-form-button">
                                         获取验证码
                                     </Button>
                                 </Col>

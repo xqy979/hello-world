@@ -1,10 +1,7 @@
-import service from '../until/request'
-
-
 /**
  * 登录接口
  */
-export function Login(data){
+export function infoList(data){
     return service.request({
         url: "/login/",
         method: "post",
@@ -14,12 +11,13 @@ export function Login(data){
 }
 
 /**
- * 获取验证码
+ * 登录接口
  */
-export function GetCode(data){
+export function infoDetailed(data){
     return service.request({
-        url: "/getSms/",
+        url: "/login/",
         method: "post",
         data, // 请求类型为 post 时
+        // params: data // 请求类型为 get 时
     })
 }

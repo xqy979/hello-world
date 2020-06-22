@@ -1,10 +1,20 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
-
-module.exports = function (app) {
-    // proxy第一个参数为要代理的路由
-    // 第二参数中target为代理后的请求网址，changeOrigin是否改变请求头，其他参数请看官网
-    app.use(createProxyMiddleware('/cityjson', {
-        target: 'http://www.web-jshtml.cn/api/react',
-        changeOrigin: true
+module.exports = function(app) {
+    app.use(createProxyMiddleware([process.env.REACT_APP_API], {
+        target: process.env.REACT_APP_BASE_URL, //配置你要请求的服务器地址
+        changeOrigin: true,
+        pathRewrite: {
+            [`^${process.env.REACT_APP_API}`] : ""
+        },
     }))
-}
+    // /devApi/login/
+    /**
+     * 1、匹配到devApi，开始做代理  http://www.web-jshtml.cn/api/react
+     * 2、/devApi/login/ => /login/
+     * 3、替换之后的地址：http://www.web-jshtml.cn/api/react/login/
+     */
+    // app.use(proxy("/manage/api", {
+    //     target: "http://admintest.happymmall.com:7000" ,
+    //     changeOrigin: true,
+    // }))
+};
