@@ -1,5 +1,4 @@
-import service from '../until/request'
-
+import service from "../untils/request";
 
 /**
  * 登录接口
@@ -10,6 +9,17 @@ export function Login(data){
         method: "post",
         data, // 请求类型为 post 时
         // params: data // 请求类型为 get 时
+    })
+}
+
+/**
+ * 注册接口
+ */
+export function Register(data){
+    return service.request({
+        url: "/register/",
+        method: "post",
+        data, // 请求类型为 post 时
     })
 }
 

@@ -144,6 +144,7 @@
     "babel-plugin-import": "^1.13.0",
     "http-proxy-middleware": "^1.0.4",
     "node-sass": "^4.14.1",
+    "react-cookies": "^0.1.1",
     "react-router-dom": "^5.2.0",
     "sass-resources-loader": "^2.0.3"
   }

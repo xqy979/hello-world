@@ -1,7 +1,8 @@
-import React,{Component}from 'react';
-import {Switch,Route,BrowserRouter} from 'react-router-dom'
+import React,{Component,Suspense,lazy}from 'react';
+import {Switch,Route,BrowserRouter as Router} from 'react-router-dom'
 
-import Login from './views/login/index'
+// import Login from './views/login/index'
+const Login = lazy(()=> import ('./views/login/index'))
 
 
 
@@ -14,11 +15,14 @@ class App extends Component{
     return (
       //
       <div className = 'test'>
-        <BrowserRouter>
-          <Switch>
-            <Route exact component = {Login} path='/' />
-          </Switch>
-        </BrowserRouter>
+        <Router>
+          <Suspense fallback={<div>loading</div>}>
+            <Switch>
+              <Route exact component = {Login} path='/' />
+            </Switch>
+          </Suspense>
+        </Router>
+        
       </div>
     );
   }

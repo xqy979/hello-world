@@ -1,135 +1,135 @@
-import React, { Component,Fragment } from 'react'
-// import { Button } from 'antd';
-import './index.scss';
-import { Form, Input, Button,Row, Col, message } from 'antd'
-import { UserOutlined,LockOutlined   } from '@ant-design/icons'
-
-import {validate_password} from '../../until/validate'
-import {Login,GetCode} from '../../api/account'
-// const style = { background: '#0092ff', padding: '8px 0' };
-
-class LoginForm extends Component {
-    constructor() {
-        super()
+import React, { Component, Fragment } from "react";
+import { withRouter } from 'react-router-dom';
+// ANTD
+import { Form, Input, Button, Row, Col } from 'antd';
+import { UserOutlined, UnlockOutlined  } from '@ant-design/icons';
+// 验证
+// import { validate_password } from "../../utils/validate";
+import { validate_password }  from "../../untils/validate"
+// API
+import { Login } from "../../api/account";
+// 组件
+import Code from "../../components/code/index";
+// 加密
+import CryptoJs from 'crypto-js';
+// 方法
+// import { setToken, setUsername } from "../../utils/cookies"
+import {setToken,setUsername} from "../../untils/cookies"
+class LoginForm extends Component{
+    constructor(){
+        super();
         this.state = {
-            username:""
-        }
-
-        this.onFinish = this.onFinish.bind(this)
-    };
- 
+            username: "",
+            password: "",
+            code: "",
+            module: "login",
+            loading: false
+        };
+    }
+    // 登录
     onFinish = (values) => {
-        Login().then(res=>{
-            console.log(res)
-        })
-          console.log('Received values of form: ', values);
-    }
-    // register
-    toogleForm = () => {
-        // 调父级的方法
-        this.props.switchFrom("register");
-    }
-    getCode=()=>{
-        const username = this.state.username;
-        if(!username) {
-            message.warning('用户名不能为空！！', 1);
-            return false;
-        }
-        if(!validate_email(username)){
-            message.warning('邮箱格式不正确！！', 1);
-            return false;
-        }
         const requestData = {
-            username:this.state.username,
-            module:'login'
+            username: this.state.username,
+            code: this.state.code,
+            password: CryptoJs.MD5(this.state.password).toString(),
         }
-        console.log(this.state.username)
-        GetCode(requestData).then(res=>{
-            console.log(res)
-        })
-    }
-    //改变input的value
-    inputChange =(e)=>{
-        let value = e.target.value
         this.setState({
-            username:value
+            loading: true
         })
-        console.log(value)
+        Login(requestData).then(response => {  // resolves
+            this.setState({
+                loading: false
+            })
+            const data = response.data.data
+            // 存储token
+            setToken(data.token);
+            setUsername(data.username);
+            // 路由跳转
+            this.props.history.push('/index');
+        }).catch(error => {  // reject
+            this.setState({
+                loading: false
+            })
+        })
+        console.log('Received values of form: ', values);
+    };
+    /** input输入处理 */
+    inputChangeUsername = (e) => {
+        let value = e.target.value;
+        this.setState({
+            username: value
+        })
     }
-
-    render() {
-        const {username} = this.state
+    inputChangePassword = (e) => {
+        let value = e.target.value;
+        this.setState({
+            password: value
+        })
+    }
+    inputChangeCode = (e) => {
+        let value = e.target.value;
+        this.setState({
+            code: value
+        })
+    }
+    toggleForm = () => {
+        // 调父级的方法
+        this.props.switchForm("register");
+    }
+    render(){
+        const { username, module, loading } = this.state;
         return (
             <Fragment>
-            <div className='form-wrap'>
-                <div className='form-header'>
-                    <h4>登录</h4>
-                    <span onClick={this.toogleForm}>注册</span>
+                <div className="form-header">
+                    <h4 className="column">登录</h4>
+                    <span onClick={this.toggleForm}>帐号注册</span>
                 </div>
-                <div className='form-content'>
+                <div className="form-content">
                     <Form
-                        name="normal_login"
-                        className="login-form"
-                        initialValues={{ remember: true }}
-                        onFinish={()=>this.onFinish()}
+                    name="normal_login"
+                    className="login-form"
+                    initialValues={{ remember: true }}
+                    onFinish={this.onFinish}
                     >
                         <Form.Item name="username" rules={
                             [
-                                { required: true, message: '邮箱不能为空!' },
-                                { type: "email", message: '邮箱格式不正确' }
-                            ]} >
-                            <Input value = { username } onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email"  />
-                        </Form.Item>
-                        
-                        <Form.Item  name="password" rules={
-                            [
-                                { required: true, message: '密码不能为空!' },
-                                { pattern: validate_password, message: '请输入大于6位小于20位数字+字母' },
-                                // ({ getFieldValue }) => ({
-                                //     validator(rule, value) {
-                                //     if(!value){
-                                //         return Promise.reject("密码不能为空");
-                                //     }else{
-                                //       if (value.length <6 || value.length > 16 ) {
-                                //         return Promise.reject("密码长度为6-12位");
-                                //       }
-                                //       return Promise.resolve(); 
-                                //     }                              },
-                                //   }),
+                                { required: true, message: "邮箱不能为空" },
+                                { type: "email", message: "邮箱格式不正确"}
                             ]
-                                } >
-                            <Input  prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="Password" />
+                        }>
+                            <Input value={username} onChange={this.inputChangeUsername} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email" />
                         </Form.Item>
-
-                        <Form.Item  name="code" rules={
-                                [
+                        <Form.Item name="password" rules={
+                            [
+                                { required: true, message: '密码不能为空' },
+                                { pattern: validate_password, message: "请输入大于6位小于20位数字+字母" },
+                            ]
+                        }>
+                            <Input type="password" onChange={this.inputChangePassword} prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Password" />
+                        </Form.Item>
+                        <Form.Item name="code" rules={
+                            [
                                 { required: true, message: '验证码不能为空' },
                                 { len: 6, message: '请输入长度为6位的验证码' }
-                                ]
-                            } >
+                            ]
+                        } >
                             <Row gutter={13}>
-                                <Col className="gutter-row" span={15}>
-                                <Input prefix={<LockOutlined className="site-form-item-icon" />} placeholder="code" />
-
+                                <Col span={15}>
+                                    <Input onChange={this.inputChangeCode} prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Code" />
                                 </Col>
-                                <Col className="gutter-row" span={9}>
-                                    <Button type="primary" onClick={this.getCode} danger className="login-form-button">
-                                        获取验证码
-                                    </Button>
+                                <Col span={9}>
+                                    <Code username={username} module={module} />
                                 </Col>
                             </Row>
                         </Form.Item>
-
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" className="login-form-button" block>
-                                登录
-                            </Button>
+                            <Button type="primary" loading={loading} htmlType="submit" className="login-form-button" block> 登录 </Button>
                         </Form.Item>
                     </Form>
                 </div>
-            </div>
             </Fragment>
         )
     }
 }
-export default LoginForm
+
+export default withRouter(LoginForm);

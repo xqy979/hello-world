@@ -1,36 +1,38 @@
-import React, { Component,Fragment } from 'react'
-import LoginFrom from './LoginForm'
-import RegisterForm from './RegisterForm'
+import React, { Component } from "react";
 
-
-class Login extends Component {
-    constructor() {
-        super()
+// css
+import "./index.scss";
+// 组件
+import LoginForm from "./LoginForm";
+import RetisterForm from "./RegisterForm";
+class Login extends Component{
+    constructor(){
+        super();
         this.state = {
-            formType : 'login',
-        }
-    };
+            formType: "login"
+        };
+    }
 
-    switchFrom = (value)=>{
+
+    switchForm = (value) => {
         this.setState({
-            formType:value
+            formType: value
         })
     }
- 
-    render() {
+
+    render(){
         return (
-            <Fragment>
-            <div className='form-wrap'>
+            <div className="form-wrap">
                 <div>
-                    {this.state.formType ==='login'
-                    ?<LoginFrom switchFrom={this.switchFrom}></LoginFrom> 
-                    : <RegisterForm switchFrom={this.switchFrom}></RegisterForm>}
+                    {
+                    this.state.formType === 'login' 
+                    ? <LoginForm switchForm={this.switchForm}></LoginForm> 
+                    : <RetisterForm switchForm={this.switchForm}></RetisterForm>
+                    }
                 </div>
-                    
-                    
             </div>
-            </Fragment>
         )
     }
 }
-export default Login
+
+export default Login;
