@@ -10,11 +10,7 @@ const router = [
       key: '/index/user',
       child: [
         {key: '/index/user/list', title: '用户列表', icon: '',},
-        {
-          key: '/index/user/add', 
-          title: '添加用户', 
-          icon: ''
-        }
+        { key: '/index/user/add',  title: '添加用户',  icon: '' }
       ]
     },
     {

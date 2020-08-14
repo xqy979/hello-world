@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-class DepartmentList extends Component {
+class DepartmentAdd extends Component {
     constructor(props){
         super(props);
         this.state = {};
@@ -10,4 +10,4 @@ class DepartmentList extends Component {
         )
     }
 }
-export default DepartmentList;
+export default DepartmentAdd;

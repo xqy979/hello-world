@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import {Link} from 'react-router-dom'
+import {Link ,withRouter} from 'react-router-dom'
 
 //antd
 import { Menu } from "antd"
@@ -11,7 +11,42 @@ const { SubMenu } = Menu;
 class AsideMenu extends Component {
     constructor(props) {
         super(props)
-        this.state = {};
+        this.state = {
+            selectedKeys:['/index/user/list'],
+            openKeys:['/index/user']
+        };
+    }
+    //生命周期
+    componentDidMount = () =>{
+        const pathname = this.props.location.pathname
+        const menuKey = pathname.split('/').slice(0,3).join('/')
+        const menuHigh = {
+            selectedKeys : pathname,
+            openKeys : menuKey,
+        }
+        this.selectMenuHigh(menuHigh)
+    }
+    //选择菜单
+    selectMenu = ({item,key,keyPath,domEvent})=>{
+        const menuHigh = {
+            selectedKeys : key,
+            openKeys:keyPath[keyPath.length-1]
+        }
+        this.selectMenuHigh(menuHigh)
+    }
+    openMenu = (openKeys) =>{
+        console.log(openKeys[openKeys.length-1])
+        this.setState({
+            openKeys:openKeys[openKeys.length-1]
+        })
+        
+    }
+    //菜单高光
+    selectMenuHigh(params){
+        this.setState({
+            selectedKeys:[params.selectedKeys],
+            openKeys:[params.openKeys],
+        })
     }
     //无子级菜单处理
     renderMenu = ({title,key}) =>{
@@ -33,14 +68,16 @@ class AsideMenu extends Component {
     }
       
     render() {
-        console.log(Router)
+        const {selectedKeys,openKeys} = this.state
         return (
             <Fragment>
                 <Menu
+                    onOpenChange={this.openMenu}
+                    onClick = {this.selectMenu}
                     theme = "dark"
                     mode="inline"
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
+                    selectedKeys={selectedKeys}
+                    openKeys={openKeys}
                     style={{ height: '100% <Menu.Item key="4">option4</Menu.Item>', borderRight: 0 }}
                 >
                    {
@@ -53,4 +90,4 @@ class AsideMenu extends Component {
         )
     }
 }
-export default AsideMenu
+export default withRouter(AsideMenu)
