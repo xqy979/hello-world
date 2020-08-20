@@ -17,15 +17,17 @@ class AsideMenu extends Component {
         };
     }
     //生命周期
-    componentDidMount = () =>{
-        const pathname = this.props.location.pathname
-        const menuKey = pathname.split('/').slice(0,3).join('/')
+    componentDidMount(){
+        const pathname = this.props.location.pathname;
+        const menuKey = pathname.split("/").slice(0, 3).join('/');
         const menuHigh = {
-            selectedKeys : pathname,
-            openKeys : menuKey,
+            selectedKeys: pathname,
+            openKeys: menuKey
         }
-        this.selectMenuHigh(menuHigh)
+        this.selectMenuHigh(menuHigh);
+       
     }
+
     //选择菜单
     selectMenu = ({item,key,keyPath,domEvent})=>{
         const menuHigh = {
@@ -34,12 +36,11 @@ class AsideMenu extends Component {
         }
         this.selectMenuHigh(menuHigh)
     }
-    openMenu = (openKeys) =>{
-        console.log(openKeys[openKeys.length-1])
+
+    openMenu = (openKeys) => {
         this.setState({
-            openKeys:openKeys[openKeys.length-1]
+            openKeys: [openKeys[openKeys.length - 1]]
         })
-        
     }
     //菜单高光
     selectMenuHigh(params){
@@ -70,6 +71,7 @@ class AsideMenu extends Component {
     render() {
         const {selectedKeys,openKeys} = this.state
         return (
+            
             <Fragment>
                 <Menu
                     onOpenChange={this.openMenu}
