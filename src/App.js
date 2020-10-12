@@ -1,6 +1,7 @@
 import React,{Component,Suspense,lazy}from 'react';
 import {Switch,Route,BrowserRouter as Router} from 'react-router-dom'
 import PrivateRouter from "./components/privateRouter/index";
+// import './styles/main.scss'
 
 // import Login from './views/login/index'
 const Login = lazy(()=> import ('./views/login/index'))

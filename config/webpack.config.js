@@ -289,6 +289,9 @@ module.exports = function(webpackEnv) {
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
       alias: {
+        '@':path.resolve('src'),
+        '@c':path.resolve('src/components'),
+        '@api':path.resolve('src/api'),
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
@@ -384,7 +387,6 @@ module.exports = function(webpackEnv) {
                   ],
                   [ "import", {libraryName: "antd", style: 'css'}  ]
                 ],
-              
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
                 // directory for faster rebuilds.
@@ -511,9 +513,9 @@ module.exports = function(webpackEnv) {
                 name: 'static/media/[name].[hash:8].[ext]',
               },
             },
-            {
-              test: /\.scss$/,
-              loader:['style-loader','css-loader','sass-loader']
+            { 
+              test: /\.scss$/, 
+              loaders: ['style-loader', 'css-loader', 'sass-loader'],
             }
             // ** STOP ** Are you adding a new loader?
             // Make sure to add the new loader(s) before the "file" loader.
